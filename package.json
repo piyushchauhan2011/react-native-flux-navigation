@@ -1,0 +1,15 @@
+{
+  "name": "Docit",
+  "version": "0.0.1",
+  "private": true,
+  "scripts": {
+    "start": "node_modules/react-native/packager/packager.sh"
+  },
+  "dependencies": {
+    "react-native": "^0.7.1",
+    "react-native-icons": "^0.2.0",
+    "react-native-keyboardevents": "^0.4.4",
+    "react-native-navbar": "^0.6.1",
+    "react-native-side-menu": "0.9.2"
+  }
+}
