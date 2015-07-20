@@ -12,12 +12,19 @@ var {
   View,
   Navigator,
   ScrollView,
+  TouchableHighlight,
 } = React;
 
 var { Icon, } = require('react-native-icons');
 
 var SideMenu = require('react-native-side-menu');
 var NavigationBar = require('react-native-navbar');
+
+var MainStyles = require('./styles/main');
+
+var Dimensions = require('Dimensions');
+
+var { screenWidth, screenHeight } = Dimensions.get('window');
 
 // require the module
 var KeyboardEvents = require('react-native-keyboardevents');
@@ -59,18 +66,98 @@ KeyboardEventEmitter.on(KeyboardEvents.KeyboardDidChangeFrameEvent, (frames) => 
   console.log('did change', frames);
 });
 
-// Start of the Layout
+// Start of the Sidebar Menu Layout
 var Menu = React.createClass({
-  about: function() {
+  clearHeader: function() {
+  },
+  liked: function() {
     this.props.menuActions.close();
-    // this.props.navigator.push({...});
+  },
+  explore: function() {
+    this.props.navigator.push({
+      title: 'Another View',
+      component: SomethingView,
+      navigationBar: <NavigationBar title="Something View" />,
+      passProps: {
+        navigator: this.props.navigator
+      }
+    });
+    // this.props.menuActions.close();
+  },
+  appointments: function() {
+    this.props.menuActions.close();
+  },
+  settings: function() {
+    this.props.menuActions.close();
+  },
+  feedback: function() {
+    this.props.menuActions.close();
   },
 
   render: function() {
     return (
-      <View>
-        <Text>Menu</Text>
-        <Text onPress={this.about}>About</Text>
+      <View style={styles.container}>
+        <View style={styles.loggedStyle}>
+          <Icon
+              name='fontawesome|user'
+              size={25}
+              color='#042'
+              style={styles.btnIcon}/>
+          <Text>Logged In</Text>
+        </View>
+        <TouchableHighlight onPress={this.explore} style={styles.menus} underlayColor='#DDD'>
+          <View style={styles.loggedStyle}>
+          <Icon
+            name='fontawesome|search'
+            size={25}
+            color='#042'
+            style={styles.btnIcon}/>
+          <Text>Explore</Text>
+          </View>
+        </TouchableHighlight>
+        <TouchableHighlight onPress={this.liked} style={styles.menus} underlayColor='#DDD'>
+          <View style={styles.loggedStyle}>
+            <Icon
+              name='fontawesome|heart'
+              size={25}
+              color='#042'
+              style={styles.btnIcon}/>
+          <Text>Liked</Text>
+          </View>
+        </TouchableHighlight>
+        <TouchableHighlight onPress={this.appointments} style={styles.menus} underlayColor='#DDD'>
+          <View style={styles.loggedStyle}>
+            <Icon
+              name='fontawesome|clock-o'
+              size={25}
+              color='#042'
+              style={styles.btnIcon}/>
+          <Text>Appointments</Text>
+          </View>
+        </TouchableHighlight>
+
+        <View style={styles.sideBarFooter}>
+          <TouchableHighlight onPress={this.settings} style={styles.menus} underlayColor='#DDD'>
+          <View style={styles.loggedStyle}>
+            <Icon
+              name='fontawesome|cog'
+              size={25}
+              color='#042'
+              style={styles.btnIcon}/>
+          <Text>Settings</Text>
+          </View>
+          </TouchableHighlight>
+          <TouchableHighlight onPress={this.feedback} style={styles.menus} underlayColor='#DDD'>
+          <View style={styles.loggedStyle}>
+            <Icon
+              name='fontawesome|comment'
+              size={25}
+              color='#042'
+              style={styles.btnIcon}/>
+          <Text>Feedback</Text>
+          </View>
+          </TouchableHighlight>
+        </View>
       </View>
     );
   }
@@ -131,7 +218,7 @@ var ContentView = React.createClass({
   },
   render: function() {
     return (
-      <View style={styles.container}>
+      <View style={MainStyles.container}>
         <Text style={styles.welcome} onPress={this.navigateToView}>
           Welcome to React Native!
         </Text>
@@ -142,7 +229,7 @@ var ContentView = React.createClass({
           name='fontawesome|facebook-square'
           size={70}
           color='#3b5998'
-          style={styles.facebook}
+          style={MainStyles.facebook}
         />
         <Text style={styles.instructions}>
           Press Cmd+R to reload,{'\n'}
@@ -181,7 +268,7 @@ var NavigationBarView = React.createClass({
     }
 
     return (
-      <View style={styles.navigator}>
+      <View style={MainStyles.navigator}>
         {navBar}
         <Component navigator={navigator} route={route} />
       </View>
@@ -191,7 +278,7 @@ var NavigationBarView = React.createClass({
   render: function() {
     return (
       <Navigator
-        style={styles.navigator}
+        style={MainStyles.navigator}
         renderScene={this.renderScene}
         initialRoute={{
           component: ContentView,
@@ -206,12 +293,6 @@ var NavigationBarView = React.createClass({
 });
 
 var styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: '#F5FC33',
-  },
   welcome: {
     fontSize: 20,
     textAlign: 'center',
@@ -222,14 +303,6 @@ var styles = StyleSheet.create({
     color: '#333333',
     marginBottom: 5,
   },
-  facebook: {
-    width: 70,
-    height: 70,
-    margin: 10
-  },
-  navigator: {
-    flex: 1,
-  },
   paddedView: {
     flex: 1,
     justifyContent: 'center',
@@ -237,6 +310,37 @@ var styles = StyleSheet.create({
   },
   bigFont: {
     fontSize: 36,
+  },
+  container: {
+    width: screenWidth*2/3,
+    height: screenHeight,
+    backgroundColor: '#FAFAFA',
+    paddingTop: 20,
+    position: 'relative',
+    flexDirection: 'column',
+  },
+  menus: {
+    alignItems: 'center',
+    justifyContent: 'center',
+    padding: 10,
+    borderTopColor: '#EEE',
+    borderTopWidth: 1,
+  },
+  loggedStyle: {
+    alignItems: 'center',
+    justifyContent: 'center',
+    padding: 10,
+  },
+  sideBarFooter: {
+    position: 'absolute',
+    bottom: 0,
+    left: 0,
+    flexDirection: 'column',
+    width: screenWidth*2/3,
+  },
+  btnIcon: {
+    height: 25,
+    width: 25,
   },
 });
 
