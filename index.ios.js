@@ -307,7 +307,7 @@ var ContentView = React.createClass({
   },
   render: function() {
     return (
-      <View>
+      <ScrollView>
         <Text style={styles.welcome} onPress={this.navigateToView}>
           Welcome to React Native!
         </Text>
@@ -324,7 +324,7 @@ var ContentView = React.createClass({
           Press Cmd+R to reload,{'\n'}
           Cmd+D or shake for dev menu
         </Text>
-      </View>
+      </ScrollView>
     );
   }
 });
