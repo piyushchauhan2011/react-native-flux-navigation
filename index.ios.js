@@ -320,20 +320,20 @@ var ContentView = React.createClass({
 });
 
 // App Initialization with the Sidebar
-var Docit = React.createClass({
+var NavigationBarView = React.createClass({
   render: function() {
-    var menu = <Menu flux={flux} navigator={navigator}/>;
+    var menu = <Menu flux={flux} navigator={this.props.navigator}/>;
 
     return (
       <SideMenu menu={menu}>
-        <NavigationBarView />
+        <ContentView flux={flux} navigator={this.props.navigator}/>
       </SideMenu>
     );
   }
 });
 
 // Navigation with Content View
-var NavigationBarView = React.createClass({
+var Docit = React.createClass({
 
   renderScene: function(route, navigator) {
     var Component = route.component;
@@ -360,7 +360,7 @@ var NavigationBarView = React.createClass({
         style={MainStyles.navigator}
         renderScene={this.renderScene}
         initialRoute={{
-          component: ContentView,
+          component: NavigationBarView,
           navigationBar: <NavigationBar title="Initial View"/>
         }}
         configureScene={() => {
