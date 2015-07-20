@@ -14,6 +14,7 @@ var {
 var WelcomeView = React.createClass({
   navigateToView: function() {
     this.props.navigator.push({
+      id: 'ANOTHERVIEW',
       title: 'Another View',
       component: SomethingView,
       navigationBar: <NavigationBar title="Something View" />,

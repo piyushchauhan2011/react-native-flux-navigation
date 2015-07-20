@@ -25,6 +25,7 @@ var Navigation = React.createClass({
     var currentState = flux.store("NavigationStore").getState();
     if(currentState.data.key !== undefined && currentState.data.key.explore !== undefined) {
       this.props.navigator.push({
+        id: 'YETANOTHERVIEW',
         title: 'Yet Another View',
         component: SomethingView,
         navigationBar: <NavigationBar title="Something View" />,
@@ -34,6 +35,7 @@ var Navigation = React.createClass({
       });
     } else if(currentState.data.key !== undefined && currentState.data.key.other !== undefined) {
       this.props.navigator.push({
+        id: 'OTHERVIEW',
         title: 'Other View',
         component: OtherView,
         navigationBar: <NavigationBar title="Other View" />,
