@@ -76,11 +76,63 @@ var Menu = React.createClass({
   }
 });
 
+var OtherView = React.createClass({
+  navigateBack: function() {
+    this.props.navigator.pop();
+  },
+  render: function() {
+    return (
+      <View style={styles.paddedView}>
+        <Text style={styles.bigFont} onPress={this.navigateBack}>Other View</Text>
+      </View>
+    );
+  }
+});
+
+var SomethingView = React.createClass({
+  navigateToOther: function() {
+    this.props.navigator.push({
+      title: 'Other View',
+      component: OtherView,
+      passProps: {
+        navigator: this.props.navigator
+      }
+    });
+  },
+  navigateBack: function() {
+    this.props.navigator.pop();
+  },
+  render: function() {
+    return (
+      <View style={styles.paddedView}>
+        <Text
+          style={styles.bigFont}
+          onPress={this.navigateToOther}>This is another View.
+        </Text>
+        <Text
+          style={styles.bigFont}
+          onPress={this.navigateBack}>Navigate to Home
+        </Text>
+      </View>
+    );
+  }
+});
+
 var ContentView = React.createClass({
+  navigateToView: function() {
+    this.props.navigator.push({
+      title: 'Another View',
+      component: SomethingView,
+      navigationBar: <NavigationBar title="Something View" />,
+      passProps: {
+        navigator: this.props.navigator
+      }
+    });
+  },
   render: function() {
     return (
       <View style={styles.container}>
-        <Text style={styles.welcome}>
+        <Text style={styles.welcome} onPress={this.navigateToView}>
           Welcome to React Native!
         </Text>
         <Text style={styles.instructions}>
@@ -145,6 +197,9 @@ var NavigationBarView = React.createClass({
           component: ContentView,
           navigationBar: <NavigationBar title="Initial View"/>
         }}
+        configureScene={() => {
+            return Navigator.SceneConfigs.FadeAndroid;
+        }}
       />
     );
   }
@@ -174,6 +229,14 @@ var styles = StyleSheet.create({
   },
   navigator: {
     flex: 1,
+  },
+  paddedView: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  bigFont: {
+    fontSize: 36,
   },
 });
 
