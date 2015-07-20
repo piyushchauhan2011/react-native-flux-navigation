@@ -242,7 +242,7 @@ var SomethingView = React.createClass({
   },
   render: function() {
     return (
-      <View style={[MainStyles.container, styles.paddedView]}>
+      <View style={styles.paddedView}>
         <Text
           style={styles.bigFont}
           onPress={this.navigateToOther}>This is another View.
@@ -297,7 +297,7 @@ var ContentView = React.createClass({
   },
   render: function() {
     return (
-      <View style={MainStyles.container}>
+      <View>
         <Text style={styles.welcome} onPress={this.navigateToView}>
           Welcome to React Native!
         </Text>
@@ -322,12 +322,8 @@ var ContentView = React.createClass({
 // App Initialization with the Sidebar
 var NavigationBarView = React.createClass({
   render: function() {
-    var menu = <Menu flux={flux} navigator={this.props.navigator}/>;
-
     return (
-      <SideMenu menu={menu}>
-        <ContentView flux={flux} navigator={this.props.navigator}/>
-      </SideMenu>
+      <ContentView flux={flux} navigator={this.props.navigator}/>
     );
   }
 });
@@ -346,11 +342,17 @@ var Docit = React.createClass({
       });
     }
 
+    var menu = <Menu flux={flux} navigator={navigator}/>;
+
     return (
+      <SideMenu menu={menu}>
       <View style={MainStyles.navigator}>
         {navBar}
+        <View style={MainStyles.container}>
         <Component navigator={navigator} route={route} flux={flux} />
+        </View>
       </View>
+      </SideMenu>
     );
   },
 
