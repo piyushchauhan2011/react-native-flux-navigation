@@ -18,6 +18,10 @@ var {
 
 var { Icon, } = require('react-native-icons');
 var Fluxxor = require('fluxxor');
+var Dimensions = require('Dimensions');
+
+var SCREEN_WIDTH = Dimensions.get('window').width;
+var SCREEN_HEIGHT = Dimensions.get('window').height;
 
 var constants = {
   CHANGE_NAVIGATION: 'CHANGE_NAVIGATION',
@@ -117,21 +121,27 @@ KeyboardEventEmitter.on(KeyboardEvents.KeyboardDidChangeFrameEvent, (frames) => 
 // Start of the Sidebar Menu Layout
 var Menu = React.createClass({
   mixins: [FluxMixin],
+  getInitialState: function() {
+    console.log(SCREEN_WIDTH);
+    console.log(SCREEN_HEIGHT);
+    return {
+    };
+  },
   clearHeader: function() {
   },
   liked: function() {
     this.props.menuActions.close();
   },
   explore: function() {
-    // this.props.navigator.push({
-    //   title: 'Another View',
-    //   component: SomethingView,
-    //   navigationBar: <NavigationBar title="Something View" />,
-    //   passProps: {
-    //     navigator: this.props.navigator
-    //   }
-    // });
-    this.getFlux().actions.changeNavigation({ explore: 'explore-view' });
+    this.props.navigator.push({
+      title: 'Another View',
+      component: SomethingView,
+      navigationBar: <NavigationBar title="Something SideMenu View" />,
+      passProps: {
+        navigator: this.props.navigator
+      }
+    });
+    // this.getFlux().actions.changeNavigation({ explore: 'explore-view' });
     this.props.menuActions.close();
   },
   appointments: function() {
@@ -393,8 +403,8 @@ var styles = StyleSheet.create({
     fontSize: 36,
   },
   container: {
-    width: screenWidth*2/3,
-    height: screenHeight,
+    width: SCREEN_WIDTH*2/3,
+    height: SCREEN_HEIGHT,
     backgroundColor: '#FAFAFA',
     paddingTop: 20,
     position: 'relative',
@@ -417,7 +427,7 @@ var styles = StyleSheet.create({
     bottom: 0,
     left: 0,
     flexDirection: 'column',
-    width: screenWidth*2/3,
+    width: SCREEN_WIDTH*2/3,
   },
   btnIcon: {
     height: 25,
