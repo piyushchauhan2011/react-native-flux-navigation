@@ -13,9 +13,57 @@ var {
   Navigator,
   ScrollView,
   TouchableHighlight,
+  AlertIOS,
 } = React;
 
 var { Icon, } = require('react-native-icons');
+var Fluxxor = require('fluxxor');
+
+var constants = {
+  CHANGE_NAVIGATION: 'CHANGE_NAVIGATION',
+};
+
+var NavigationStore = Fluxxor.createStore({
+  initialize: function() {
+    this.data = {};
+
+    this.bindActions(
+      constants.CHANGE_NAVIGATION, this.onChangeNavigation,
+    );
+  },
+
+  onChangeNavigation: function(payload) {
+    console.log('on change navigation: ', payload);
+    this.data = payload;
+    this.emit("change");
+  },
+
+  getState: function() {
+    return {
+      data: this.data,
+    };
+  },
+});
+
+var actions = {
+  changeNavigation: function(value) {
+    this.dispatch(constants.CHANGE_NAVIGATION, {key: value});
+  },
+};
+
+var stores = {
+  NavigationStore: new NavigationStore()
+};
+
+var flux = new Fluxxor.Flux(stores, actions);
+flux.on("dispatch", function(type, payload) {
+  if (console && console.log) {
+    console.log("[Dispatch]", type, payload);
+  }
+});
+
+var FluxMixin = Fluxxor.FluxMixin(React),
+    StoreWatchMixin = Fluxxor.StoreWatchMixin;
 
 var SideMenu = require('react-native-side-menu');
 var NavigationBar = require('react-native-navbar');
@@ -68,23 +116,26 @@ KeyboardEventEmitter.on(KeyboardEvents.KeyboardDidChangeFrameEvent, (frames) => 
 
 // Start of the Sidebar Menu Layout
 var Menu = React.createClass({
+  mixins: [FluxMixin],
   clearHeader: function() {
   },
   liked: function() {
     this.props.menuActions.close();
   },
   explore: function() {
-    this.props.navigator.push({
-      title: 'Another View',
-      component: SomethingView,
-      navigationBar: <NavigationBar title="Something View" />,
-      passProps: {
-        navigator: this.props.navigator
-      }
-    });
-    // this.props.menuActions.close();
+    // this.props.navigator.push({
+    //   title: 'Another View',
+    //   component: SomethingView,
+    //   navigationBar: <NavigationBar title="Something View" />,
+    //   passProps: {
+    //     navigator: this.props.navigator
+    //   }
+    // });
+    this.getFlux().actions.changeNavigation({ explore: 'explore-view' });
+    this.props.menuActions.close();
   },
   appointments: function() {
+    this.getFlux().actions.changeNavigation({ appointments: 'appointments-view' });
     this.props.menuActions.close();
   },
   settings: function() {
@@ -191,7 +242,7 @@ var SomethingView = React.createClass({
   },
   render: function() {
     return (
-      <View style={styles.paddedView}>
+      <View style={[MainStyles.container, styles.paddedView]}>
         <Text
           style={styles.bigFont}
           onPress={this.navigateToOther}>This is another View.
@@ -206,6 +257,34 @@ var SomethingView = React.createClass({
 });
 
 var ContentView = React.createClass({
+  mixins: [FluxMixin, StoreWatchMixin("NavigationStore")],
+  getStateFromFlux: function() {
+    var flux = this.getFlux();
+    // Our entire state is made up of the TodoStore data. In a larger
+    // application, you will likely return data from multiple stores, e.g.:
+    //
+    //   return {
+    //     todoData: flux.store("TodoStore").getState(),
+    //     userData: flux.store("UserStore").getData(),
+    //     fooBarData: flux.store("FooBarStore").someMoreData()
+    //   };
+    console.log('Handled the Navigation: ', flux.store('NavigationStore').getState());
+    // console.log(this.props.navigator);
+    var currentState = flux.store("NavigationStore").getState();
+    if(currentState.data.key !== undefined && currentState.data.key.explore !== undefined) {
+      this.props.navigator.push({
+        title: 'Yet Another View',
+        component: SomethingView,
+        navigationBar: <NavigationBar title="Something View" />,
+        passProps: {
+          navigator: this.props.navigator
+        }
+      });
+    } else if(currentState.data.key !== undefined && currentState.data.key.appointments !== undefined) {
+      AlertIOS.alert('Foo Title', 'My Alert Message');
+    }
+    return flux.store("NavigationStore").getState();
+  },
   navigateToView: function() {
     this.props.navigator.push({
       title: 'Another View',
@@ -243,11 +322,11 @@ var ContentView = React.createClass({
 // App Initialization with the Sidebar
 var Docit = React.createClass({
   render: function() {
-    var menu = <Menu navigator={navigator}/>;
+    var menu = <Menu flux={flux} navigator={navigator}/>;
 
     return (
       <SideMenu menu={menu}>
-        <NavigationBarView/>
+        <NavigationBarView />
       </SideMenu>
     );
   }
@@ -270,7 +349,7 @@ var NavigationBarView = React.createClass({
     return (
       <View style={MainStyles.navigator}>
         {navBar}
-        <Component navigator={navigator} route={route} />
+        <Component navigator={navigator} route={route} flux={flux} />
       </View>
     );
   },
