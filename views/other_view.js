@@ -2,8 +2,13 @@
 
 var React = require('react-native');
 var MainStyles = require('../styles/main');
+var Fluxxor = require('fluxxor');
+
+var FluxMixin = Fluxxor.FluxMixin(React),
+    StoreWatchMixin = Fluxxor.StoreWatchMixin;
 
 var OtherView = React.createClass({
+  mixins: [FluxMixin],
   navigateBack: function() {
     this.props.navigator.pop();
   },

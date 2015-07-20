@@ -4,6 +4,12 @@ var React = require('react-native');
 var MainStyles = require('../styles/main');
 var SomethingView = require('../views/something_view');
 var NavigationBar = require('react-native-navbar');
+
+var Fluxxor = require('fluxxor');
+
+var FluxMixin = Fluxxor.FluxMixin(React),
+    StoreWatchMixin = Fluxxor.StoreWatchMixin;
+
 var { Icon, } = require('react-native-icons');
 var Dimensions = require('Dimensions');
 
@@ -53,23 +59,26 @@ var styles = StyleSheet.create({
 
 // Start of the Sidebar Menu Layout
 var SideBar = React.createClass({
+  mixins: [FluxMixin],
   clearHeader: function() {
   },
   liked: function() {
     this.props.menuActions.close();
   },
   explore: function() {
-    this.props.navigator.push({
-      title: 'Another View',
-      component: SomethingView,
-      navigationBar: <NavigationBar title="Something View" />,
-      passProps: {
-        navigator: this.props.navigator
-      }
-    });
-    // this.props.menuActions.close();
+    // this.props.navigator.push({
+    //   title: 'Another View',
+    //   component: SomethingView,
+    //   navigationBar: <NavigationBar title="Something View" />,
+    //   passProps: {
+    //     navigator: this.props.navigator
+    //   }
+    // });
+    this.getFlux().actions.changeNavigation({ explore: 'explore-view' });
+    this.props.menuActions.close();
   },
   appointments: function() {
+    this.getFlux().actions.changeNavigation({ appointments: 'appointments-view' });
     this.props.menuActions.close();
   },
   settings: function() {
