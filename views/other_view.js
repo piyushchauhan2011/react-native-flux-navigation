@@ -4,6 +4,11 @@ var React = require('react-native');
 var MainStyles = require('../styles/main');
 var Fluxxor = require('fluxxor');
 
+var {
+  View,
+  Text,
+} = React;
+
 var FluxMixin = Fluxxor.FluxMixin(React),
     StoreWatchMixin = Fluxxor.StoreWatchMixin;
 
