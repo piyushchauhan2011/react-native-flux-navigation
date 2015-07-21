@@ -7,7 +7,14 @@ var NavigationBar = require('react-native-navbar');
 var { Icon, } = require('react-native-icons');
 var Dimensions = require('Dimensions');
 
-var { screenWidth, screenHeight } = Dimensions.get('window');
+var SCREEN_WIDTH = Dimensions.get('window').width;
+var SCREEN_HEIGHT = Dimensions.get('window').height;
+
+var Fluxxor = require('fluxxor');
+
+var flux = require('../flux');
+var FluxMixin = Fluxxor.FluxMixin(React),
+    StoreWatchMixin = Fluxxor.StoreWatchMixin;
 
 var {
   StyleSheet,
@@ -17,42 +24,15 @@ var {
   TouchableHighlight,
 } = React;
 
-var styles = StyleSheet.create({
-  container: {
-    width: screenWidth*2/3,
-    height: screenHeight,
-    backgroundColor: '#FAFAFA',
-    paddingTop: 20,
-    position: 'relative',
-    flexDirection: 'column',
-  },
-  menus: {
-    alignItems: 'center',
-    justifyContent: 'center',
-    padding: 10,
-    borderTopColor: '#EEE',
-    borderTopWidth: 1,
-  },
-  loggedStyle: {
-    alignItems: 'center',
-    justifyContent: 'center',
-    padding: 10,
-  },
-  sideBarFooter: {
-    position: 'absolute',
-    bottom: 0,
-    left: 0,
-    flexDirection: 'column',
-    width: screenWidth*2/3,
-  },
-  btnIcon: {
-    height: 25,
-    width: 25,
-  },
-});
-
 // Start of the Sidebar Menu Layout
 var SideBar = React.createClass({
+  mixins: [FluxMixin],
+  getInitialState: function() {
+    console.log(SCREEN_WIDTH);
+    console.log(SCREEN_HEIGHT);
+    return {
+    };
+  },
   clearHeader: function() {
   },
   liked: function() {
@@ -62,14 +42,16 @@ var SideBar = React.createClass({
     this.props.navigator.push({
       title: 'Another View',
       component: SomethingView,
-      navigationBar: <NavigationBar title="Something View" />,
+      navigationBar: <NavigationBar title="Something SideMenu View" />,
       passProps: {
         navigator: this.props.navigator
       }
     });
-    // this.props.menuActions.close();
+    // this.getFlux().actions.changeNavigation({ explore: 'explore-view' });
+    this.props.menuActions.close();
   },
   appointments: function() {
+    this.getFlux().actions.changeNavigation({ appointments: 'appointments-view' });
     this.props.menuActions.close();
   },
   settings: function() {
@@ -81,64 +63,64 @@ var SideBar = React.createClass({
 
   render: function() {
     return (
-      <View style={styles.container}>
-        <View style={styles.loggedStyle}>
+      <View style={MainStyles.scontainer}>
+        <View style={MainStyles.loggedStyle}>
           <Icon
               name='fontawesome|user'
               size={25}
               color='#042'
-              style={styles.btnIcon}/>
+              style={MainStyles.btnIcon}/>
           <Text>Logged In</Text>
         </View>
-        <TouchableHighlight onPress={this.explore} style={styles.menus} underlayColor='#DDD'>
-          <View style={styles.loggedStyle}>
+        <TouchableHighlight onPress={this.explore} style={MainStyles.menus} underlayColor='#DDD'>
+          <View style={MainStyles.loggedStyle}>
           <Icon
             name='fontawesome|search'
             size={25}
             color='#042'
-            style={styles.btnIcon}/>
+            style={MainStyles.btnIcon}/>
           <Text>Explore</Text>
           </View>
         </TouchableHighlight>
-        <TouchableHighlight onPress={this.liked} style={styles.menus} underlayColor='#DDD'>
-          <View style={styles.loggedStyle}>
+        <TouchableHighlight onPress={this.liked} style={MainStyles.menus} underlayColor='#DDD'>
+          <View style={MainStyles.loggedStyle}>
             <Icon
               name='fontawesome|heart'
               size={25}
               color='#042'
-              style={styles.btnIcon}/>
+              style={MainStyles.btnIcon}/>
           <Text>Liked</Text>
           </View>
         </TouchableHighlight>
-        <TouchableHighlight onPress={this.appointments} style={styles.menus} underlayColor='#DDD'>
-          <View style={styles.loggedStyle}>
+        <TouchableHighlight onPress={this.appointments} style={MainStyles.menus} underlayColor='#DDD'>
+          <View style={MainStyles.loggedStyle}>
             <Icon
               name='fontawesome|clock-o'
               size={25}
               color='#042'
-              style={styles.btnIcon}/>
+              style={MainStyles.btnIcon}/>
           <Text>Appointments</Text>
           </View>
         </TouchableHighlight>
 
-        <View style={styles.sideBarFooter}>
-          <TouchableHighlight onPress={this.settings} style={styles.menus} underlayColor='#DDD'>
-          <View style={styles.loggedStyle}>
+        <View style={MainStyles.sideBarFooter}>
+          <TouchableHighlight onPress={this.settings} style={MainStyles.menus} underlayColor='#DDD'>
+          <View style={MainStyles.loggedStyle}>
             <Icon
               name='fontawesome|cog'
               size={25}
               color='#042'
-              style={styles.btnIcon}/>
+              style={MainStyles.btnIcon}/>
           <Text>Settings</Text>
           </View>
           </TouchableHighlight>
-          <TouchableHighlight onPress={this.feedback} style={styles.menus} underlayColor='#DDD'>
-          <View style={styles.loggedStyle}>
+          <TouchableHighlight onPress={this.feedback} style={MainStyles.menus} underlayColor='#DDD'>
+          <View style={MainStyles.loggedStyle}>
             <Icon
               name='fontawesome|comment'
               size={25}
               color='#042'
-              style={styles.btnIcon}/>
+              style={MainStyles.btnIcon}/>
           <Text>Feedback</Text>
           </View>
           </TouchableHighlight>

@@ -1,6 +1,10 @@
 'use strict';
 
 var React = require('react-native');
+var Dimensions = require('Dimensions');
+
+var SCREEN_WIDTH = Dimensions.get('window').width;
+var SCREEN_HEIGHT = Dimensions.get('window').height;
 
 var {
   StyleSheet,
@@ -15,11 +19,6 @@ var styles = StyleSheet.create({
   },
   navigator: {
     flex: 1,
-  },
-  facebook: {
-    width: 70,
-    height: 70,
-    margin: 10
   },
   welcome: {
     fontSize: 20,
@@ -38,6 +37,37 @@ var styles = StyleSheet.create({
   },
   bigFont: {
     fontSize: 36,
+  },
+  scontainer: {
+    width: SCREEN_WIDTH*2/3,
+    height: SCREEN_HEIGHT,
+    backgroundColor: '#FAFAFA',
+    paddingTop: 20,
+    position: 'relative',
+    flexDirection: 'column',
+  },
+  menus: {
+    alignItems: 'center',
+    justifyContent: 'center',
+    padding: 10,
+    borderTopColor: '#EEE',
+    borderTopWidth: 1,
+  },
+  loggedStyle: {
+    alignItems: 'center',
+    justifyContent: 'center',
+    padding: 10,
+  },
+  sideBarFooter: {
+    position: 'absolute',
+    bottom: 0,
+    left: 0,
+    flexDirection: 'column',
+    width: SCREEN_WIDTH*2/3,
+  },
+  btnIcon: {
+    height: 25,
+    width: 25,
   },
 });
 
